@@ -15,20 +15,25 @@ import hashlib
 # print(index)
 
 
-def hash_cache(capacity, attempts):
-    cache = [None] * capacity
+# def hash_cache(capacity, attempts):
+#     cache = [None] * capacity
 
-    for i in range(attempts):
-        raw_hash = hashlib.sha256(str(i).encode())
-        hex_hash = raw_hash.hexdigest()
-        index = int(hex_hash[:2], 16)
-        cache[index] = str(i)
-        # print(index)
+#     for i in range(attempts):
+#         raw_hash = hashlib.sha256(str(i).encode())
+#         hex_hash = raw_hash.hexdigest()
+#         index = int(hex_hash[:2], 16)
+#         cache[index] = str(i)
+#         # print(index)
 
-    count = sum(1 for i in cache if i is not None)
-    print(f'coverage: {count/capacity:.5f}')
-    return cache
+#     count = sum(1 for i in cache if i is not None)
+#     print(f'coverage: {count/capacity:.5f}')
+#     return cache
 
-cache_of_hashes = hash_cache(100, 100)
+# cache_of_hashes = hash_cache(100, 100)
 
 # print(int('FF', 16))
+
+last_proof = 123459357529
+last_encoded = f'{last_proof}'.encode()
+last_hash = hashlib.sha256(last_encoded).hexdigest()
+breakpoint()

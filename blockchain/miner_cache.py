@@ -18,13 +18,12 @@ def hash_cache(capacity, attempts):
         hex_hash = raw_hash.hexdigest()
         index = int(hex_hash[:6], 16)
         cache[index] = i
-        # print(index)
 
     count = sum(1 for i in cache if i is not None)
     print(f'coverage: {count/capacity:.5f}')
     return cache
 
-cache_of_hashes = hash_cache(1000000, 1000000)
+cache_of_hashes = hash_cache(16777216, 16777216 * 4)
 
 
 def proof_of_work(last_proof):
@@ -42,11 +41,11 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
     proof = 0
     # #  TODO: Your code here
-    tail = str(last_proof)[-6:]
-    index = int(tail)
+    last_encoded = f'{last_proof}'.encode()
+    last_hash = hashlib.sha256(last_encoded).hexdigest()
+    tail = last_hash[-6:]
+    index = int(tail, 16)
     proof = cache_of_hashes[index] or 1
-    # breakpoint()
-    # sys.exit()
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
@@ -87,7 +86,13 @@ if __name__ == '__main__':
     while True:
         # Get the last proof from the server
         r = requests.get(url=node + "/last_proof")
-        data = r.json()
+
+        try:
+            data = r.json()
+        except Exception as e:
+            print(e)
+            continue
+
         new_proof = proof_of_work(data.get('proof'))
 
         post_data = {"proof": new_proof,
