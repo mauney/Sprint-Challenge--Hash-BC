@@ -10,6 +10,23 @@ from timeit import default_timer as timer
 import random
 
 
+def hash_cache(capacity, attempts):
+    cache = [None] * capacity
+
+    for i in range(attempts):
+        raw_hash = hashlib.sha256(str(i).encode())
+        hex_hash = raw_hash.hexdigest()
+        index = int(hex_hash[:6], 16)
+        cache[index] = i
+        # print(index)
+
+    count = sum(1 for i in cache if i is not None)
+    print(f'coverage: {count/capacity:.5f}')
+    return cache
+
+cache_of_hashes = hash_cache(1000000, 1000000)
+
+
 def proof_of_work(last_proof):
     """
     Multi-Ouroboros of Work Algorithm
@@ -26,6 +43,7 @@ def proof_of_work(last_proof):
     proof = 0
     # #  TODO: Your code here
     tail = str(last_proof)[-6:]
+    index = int(tail)
     proof = cache_of_hashes[index] or 1
     # breakpoint()
     # sys.exit()
